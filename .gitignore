@@ -1,0 +1,23 @@
+# Compilados Maven
+**/target/
+
+# Bases de datos H2 generadas en ejecucion
+**/data/
+*.db
+*.mv.db
+*.trace.db
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+*.classpath
+*.project
+.settings/
+
+# Logs
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
