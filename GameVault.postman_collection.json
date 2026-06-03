@@ -1,0 +1,360 @@
+{
+  "info": {
+    "name": "GameVault - Plataforma de Videojuegos (Microservicios)",
+    "description": "Coleccion completa de los 10 microservicios del proyecto DSY1103. Cada carpeta corresponde a un microservicio. Las URLs usan variables de coleccion (usuarios, desarrolladoras, etc.) que puedes editar en la pestana Variables.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "usuarios", "value": "http://localhost:8081" },
+    { "key": "desarrolladoras", "value": "http://localhost:8082" },
+    { "key": "categorias", "value": "http://localhost:8083" },
+    { "key": "juegos", "value": "http://localhost:8084" },
+    { "key": "carrito", "value": "http://localhost:8085" },
+    { "key": "pagos", "value": "http://localhost:8086" },
+    { "key": "biblioteca", "value": "http://localhost:8087" },
+    { "key": "suscripciones", "value": "http://localhost:8088" },
+    { "key": "logros", "value": "http://localhost:8089" },
+    { "key": "resenas", "value": "http://localhost:8090" }
+  ],
+  "item": [
+    {
+      "name": "1. Usuarios (8081)",
+      "item": [
+        {
+          "name": "Listar usuarios",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{usuarios}}/api/usuarios", "host": ["{{usuarios}}"], "path": ["api", "usuarios"] } }
+        },
+        {
+          "name": "Obtener usuario por id",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{usuarios}}/api/usuarios/1", "host": ["{{usuarios}}"], "path": ["api", "usuarios", "1"] } }
+        },
+        {
+          "name": "Crear usuario",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"nombreUsuario\": \"nuevo_jugador\",\n  \"email\": \"nuevo@steamclone.com\",\n  \"password\": \"clave123\",\n  \"pais\": \"Chile\"\n}" },
+            "url": { "raw": "{{usuarios}}/api/usuarios", "host": ["{{usuarios}}"], "path": ["api", "usuarios"] }
+          }
+        },
+        {
+          "name": "Actualizar usuario",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"nombreUsuario\": \"gabe_player\",\n  \"email\": \"gabe@steamclone.com\",\n  \"password\": \"nuevaClave123\",\n  \"pais\": \"Chile\"\n}" },
+            "url": { "raw": "{{usuarios}}/api/usuarios/1", "host": ["{{usuarios}}"], "path": ["api", "usuarios", "1"] }
+          }
+        },
+        {
+          "name": "Recargar saldo",
+          "request": { "method": "PUT", "header": [], "url": { "raw": "{{usuarios}}/api/usuarios/1/recargar?monto=10000", "host": ["{{usuarios}}"], "path": ["api", "usuarios", "1", "recargar"], "query": [ { "key": "monto", "value": "10000" } ] } }
+        },
+        {
+          "name": "Debitar saldo",
+          "request": { "method": "PUT", "header": [], "url": { "raw": "{{usuarios}}/api/usuarios/1/debitar?monto=5000", "host": ["{{usuarios}}"], "path": ["api", "usuarios", "1", "debitar"], "query": [ { "key": "monto", "value": "5000" } ] } }
+        },
+        {
+          "name": "Eliminar usuario",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{usuarios}}/api/usuarios/4", "host": ["{{usuarios}}"], "path": ["api", "usuarios", "4"] } }
+        }
+      ]
+    },
+    {
+      "name": "2. Desarrolladoras (8082)",
+      "item": [
+        {
+          "name": "Listar desarrolladoras",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{desarrolladoras}}/api/desarrolladoras", "host": ["{{desarrolladoras}}"], "path": ["api", "desarrolladoras"] } }
+        },
+        {
+          "name": "Obtener desarrolladora por id",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{desarrolladoras}}/api/desarrolladoras/1", "host": ["{{desarrolladoras}}"], "path": ["api", "desarrolladoras", "1"] } }
+        },
+        {
+          "name": "Crear desarrolladora",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"FromSoftware\",\n  \"paisOrigen\": \"Japon\",\n  \"sitioWeb\": \"https://www.fromsoftware.jp\",\n  \"fechaFundacion\": \"1986-11-01\"\n}" },
+            "url": { "raw": "{{desarrolladoras}}/api/desarrolladoras", "host": ["{{desarrolladoras}}"], "path": ["api", "desarrolladoras"] }
+          }
+        },
+        {
+          "name": "Actualizar desarrolladora",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Valve\",\n  \"paisOrigen\": \"Estados Unidos\",\n  \"sitioWeb\": \"https://www.valvesoftware.com\",\n  \"fechaFundacion\": \"1996-08-24\"\n}" },
+            "url": { "raw": "{{desarrolladoras}}/api/desarrolladoras/1", "host": ["{{desarrolladoras}}"], "path": ["api", "desarrolladoras", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar desarrolladora",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{desarrolladoras}}/api/desarrolladoras/4", "host": ["{{desarrolladoras}}"], "path": ["api", "desarrolladoras", "4"] } }
+        }
+      ]
+    },
+    {
+      "name": "3. Categorias (8083)",
+      "item": [
+        {
+          "name": "Listar categorias",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{categorias}}/api/categorias", "host": ["{{categorias}}"], "path": ["api", "categorias"] } }
+        },
+        {
+          "name": "Obtener categoria por id",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{categorias}}/api/categorias/1", "host": ["{{categorias}}"], "path": ["api", "categorias", "1"] } }
+        },
+        {
+          "name": "Crear categoria",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Carreras\",\n  \"descripcion\": \"Juegos de conduccion y velocidad\"\n}" },
+            "url": { "raw": "{{categorias}}/api/categorias", "host": ["{{categorias}}"], "path": ["api", "categorias"] }
+          }
+        },
+        {
+          "name": "Actualizar categoria",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"RPG\",\n  \"descripcion\": \"Juegos de rol con historia profunda y progresion\"\n}" },
+            "url": { "raw": "{{categorias}}/api/categorias/1", "host": ["{{categorias}}"], "path": ["api", "categorias", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar categoria",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{categorias}}/api/categorias/5", "host": ["{{categorias}}"], "path": ["api", "categorias", "5"] } }
+        }
+      ]
+    },
+    {
+      "name": "4. Juegos (8084)",
+      "item": [
+        {
+          "name": "Listar juegos",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{juegos}}/api/juegos", "host": ["{{juegos}}"], "path": ["api", "juegos"] } }
+        },
+        {
+          "name": "Obtener juego por id",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{juegos}}/api/juegos/1", "host": ["{{juegos}}"], "path": ["api", "juegos", "1"] } }
+        },
+        {
+          "name": "Crear juego (valida desarrolladora y categoria via Feign)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"Elden Ring\",\n  \"descripcion\": \"RPG de accion en mundo abierto\",\n  \"precio\": 39990,\n  \"fechaLanzamiento\": \"2022-02-25\",\n  \"desarrolladoraId\": 2,\n  \"categoriaId\": 1,\n  \"plataforma\": \"PC/Consola\",\n  \"requisitosMinimos\": \"12GB RAM, GTX 1060\",\n  \"requisitosRecomendados\": \"16GB RAM, RTX 2070\",\n  \"descuentoPorcentaje\": 15\n}" },
+            "url": { "raw": "{{juegos}}/api/juegos", "host": ["{{juegos}}"], "path": ["api", "juegos"] }
+          }
+        },
+        {
+          "name": "Actualizar juego",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"titulo\": \"The Witcher 3\",\n  \"descripcion\": \"RPG de mundo abierto con Geralt de Rivia\",\n  \"precio\": 19990,\n  \"fechaLanzamiento\": \"2015-05-19\",\n  \"desarrolladoraId\": 2,\n  \"categoriaId\": 1,\n  \"plataforma\": \"PC/Consola\",\n  \"requisitosMinimos\": \"8GB RAM, GTX 660\",\n  \"requisitosRecomendados\": \"16GB RAM, GTX 1070\",\n  \"descuentoPorcentaje\": 60\n}" },
+            "url": { "raw": "{{juegos}}/api/juegos/2", "host": ["{{juegos}}"], "path": ["api", "juegos", "2"] }
+          }
+        },
+        {
+          "name": "Eliminar juego",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{juegos}}/api/juegos/4", "host": ["{{juegos}}"], "path": ["api", "juegos", "4"] } }
+        }
+      ]
+    },
+    {
+      "name": "5. Carrito (8085)",
+      "item": [
+        {
+          "name": "Ver carrito del usuario",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{carrito}}/api/carrito/usuario/1", "host": ["{{carrito}}"], "path": ["api", "carrito", "usuario", "1"] } }
+        },
+        {
+          "name": "Agregar juego al carrito",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"juegoId\": 1\n}" },
+            "url": { "raw": "{{carrito}}/api/carrito/items", "host": ["{{carrito}}"], "path": ["api", "carrito", "items"] }
+          }
+        },
+        {
+          "name": "Eliminar juego del carrito",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{carrito}}/api/carrito/usuario/1/juego/1", "host": ["{{carrito}}"], "path": ["api", "carrito", "usuario", "1", "juego", "1"] } }
+        },
+        {
+          "name": "Vaciar carrito",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{carrito}}/api/carrito/usuario/1", "host": ["{{carrito}}"], "path": ["api", "carrito", "usuario", "1"] } }
+        },
+        {
+          "name": "Marcar carrito como pagado",
+          "request": { "method": "PUT", "header": [], "url": { "raw": "{{carrito}}/api/carrito/usuario/1/pagar", "host": ["{{carrito}}"], "path": ["api", "carrito", "usuario", "1", "pagar"] } }
+        }
+      ]
+    },
+    {
+      "name": "6. Pagos (8086)",
+      "item": [
+        {
+          "name": "Procesar pago del carrito (orquesta 4 servicios)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"metodoPago\": \"SALDO\"\n}" },
+            "url": { "raw": "{{pagos}}/api/pagos", "host": ["{{pagos}}"], "path": ["api", "pagos"] }
+          }
+        },
+        {
+          "name": "Obtener pago por id",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{pagos}}/api/pagos/1", "host": ["{{pagos}}"], "path": ["api", "pagos", "1"] } }
+        },
+        {
+          "name": "Historial de pagos del usuario",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{pagos}}/api/pagos/usuario/1", "host": ["{{pagos}}"], "path": ["api", "pagos", "usuario", "1"] } }
+        }
+      ]
+    },
+    {
+      "name": "7. Biblioteca (8087)",
+      "item": [
+        {
+          "name": "Listar biblioteca del usuario",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{biblioteca}}/api/biblioteca/usuario/1", "host": ["{{biblioteca}}"], "path": ["api", "biblioteca", "usuario", "1"] } }
+        },
+        {
+          "name": "Verificar si el usuario posee un juego",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{biblioteca}}/api/biblioteca/usuario/1/posee/2", "host": ["{{biblioteca}}"], "path": ["api", "biblioteca", "usuario", "1", "posee", "2"] } }
+        },
+        {
+          "name": "Adquirir juego (registrar propiedad)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 2,\n  \"juegoId\": 3\n}" },
+            "url": { "raw": "{{biblioteca}}/api/biblioteca", "host": ["{{biblioteca}}"], "path": ["api", "biblioteca"] }
+          }
+        },
+        {
+          "name": "Registrar horas jugadas",
+          "request": { "method": "PATCH", "header": [], "url": { "raw": "{{biblioteca}}/api/biblioteca/1/horas?horas=3", "host": ["{{biblioteca}}"], "path": ["api", "biblioteca", "1", "horas"], "query": [ { "key": "horas", "value": "3" } ] } }
+        },
+        {
+          "name": "Cambiar estado instalado",
+          "request": { "method": "PATCH", "header": [], "url": { "raw": "{{biblioteca}}/api/biblioteca/1/instalado?valor=true", "host": ["{{biblioteca}}"], "path": ["api", "biblioteca", "1", "instalado"], "query": [ { "key": "valor", "value": "true" } ] } }
+        },
+        {
+          "name": "Eliminar entrada de biblioteca",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{biblioteca}}/api/biblioteca/3", "host": ["{{biblioteca}}"], "path": ["api", "biblioteca", "3"] } }
+        }
+      ]
+    },
+    {
+      "name": "8. Suscripciones (8088)",
+      "item": [
+        {
+          "name": "Listar planes",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{suscripciones}}/api/planes", "host": ["{{suscripciones}}"], "path": ["api", "planes"] } }
+        },
+        {
+          "name": "Crear plan",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Pase Semestral\",\n  \"precioMensual\": 4990,\n  \"duracionMeses\": 6,\n  \"descripcion\": \"Acceso al catalogo por 6 meses\"\n}" },
+            "url": { "raw": "{{suscripciones}}/api/planes", "host": ["{{suscripciones}}"], "path": ["api", "planes"] }
+          }
+        },
+        {
+          "name": "Suscribir usuario a un plan",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 2,\n  \"planId\": 1,\n  \"renovacionAutomatica\": true\n}" },
+            "url": { "raw": "{{suscripciones}}/api/suscripciones", "host": ["{{suscripciones}}"], "path": ["api", "suscripciones"] }
+          }
+        },
+        {
+          "name": "Suscripciones de un usuario",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{suscripciones}}/api/suscripciones/usuario/1", "host": ["{{suscripciones}}"], "path": ["api", "suscripciones", "usuario", "1"] } }
+        },
+        {
+          "name": "Cancelar suscripcion",
+          "request": { "method": "PUT", "header": [], "url": { "raw": "{{suscripciones}}/api/suscripciones/1/cancelar", "host": ["{{suscripciones}}"], "path": ["api", "suscripciones", "1", "cancelar"] } }
+        }
+      ]
+    },
+    {
+      "name": "9. Logros (8089)",
+      "item": [
+        {
+          "name": "Listar logros de un juego",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{logros}}/api/logros/juego/2", "host": ["{{logros}}"], "path": ["api", "logros", "juego", "2"] } }
+        },
+        {
+          "name": "Crear logro (valida juego via Feign)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"juegoId\": 3,\n  \"nombre\": \"Imparable\",\n  \"descripcion\": \"Completa 10 fugas seguidas\",\n  \"puntos\": 120\n}" },
+            "url": { "raw": "{{logros}}/api/logros", "host": ["{{logros}}"], "path": ["api", "logros"] }
+          }
+        },
+        {
+          "name": "Desbloquear logro para un usuario",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"logroId\": 2\n}" },
+            "url": { "raw": "{{logros}}/api/logros/desbloquear", "host": ["{{logros}}"], "path": ["api", "logros", "desbloquear"] }
+          }
+        },
+        {
+          "name": "Logros desbloqueados por usuario",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{logros}}/api/logros/usuario/1/desbloqueados", "host": ["{{logros}}"], "path": ["api", "logros", "usuario", "1", "desbloqueados"] } }
+        },
+        {
+          "name": "Eliminar logro",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{logros}}/api/logros/4", "host": ["{{logros}}"], "path": ["api", "logros", "4"] } }
+        }
+      ]
+    },
+    {
+      "name": "10. Resenas (8090)",
+      "item": [
+        {
+          "name": "Listar resenas de un juego",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{resenas}}/api/resenas/juego/2", "host": ["{{resenas}}"], "path": ["api", "resenas", "juego", "2"] } }
+        },
+        {
+          "name": "Resumen de calificaciones de un juego",
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{resenas}}/api/resenas/juego/2/resumen", "host": ["{{resenas}}"], "path": ["api", "resenas", "juego", "2", "resumen"] } }
+        },
+        {
+          "name": "Crear resena (solo si posee el juego - valida via Feign)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 2,\n  \"juegoId\": 2,\n  \"calificacion\": 4,\n  \"comentario\": \"Muy buen juego, lo recomiendo.\",\n  \"recomendado\": true\n}" },
+            "url": { "raw": "{{resenas}}/api/resenas", "host": ["{{resenas}}"], "path": ["api", "resenas"] }
+          }
+        },
+        {
+          "name": "Actualizar resena",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"usuarioId\": 1,\n  \"juegoId\": 2,\n  \"calificacion\": 5,\n  \"comentario\": \"Una obra maestra, actualizo mi nota a 5.\",\n  \"recomendado\": true\n}" },
+            "url": { "raw": "{{resenas}}/api/resenas/1", "host": ["{{resenas}}"], "path": ["api", "resenas", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar resena",
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{resenas}}/api/resenas/2", "host": ["{{resenas}}"], "path": ["api", "resenas", "2"] } }
+        }
+      ]
+    }
+  ]
+}
