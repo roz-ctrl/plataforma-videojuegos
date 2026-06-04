@@ -1,36 +1,28 @@
-# Diagrama de Arquitectura — GameVault
+# Diagramas de arquitectura
 
-Documento de apoyo para la **defensa técnica**. Contiene tres diagramas:
-1. Arquitectura general de microservicios.
-2. Mapa de comunicación (Feign) entre servicios.
-3. Diagrama de secuencia del flujo de compra.
-
-> Los diagramas están en **Mermaid**: GitHub los renderiza automáticamente.
-> Para proyectarlos también puedes pegarlos en https://mermaid.live
-
----
+Documento de apoyo para la defensa. Tiene los diagramas hechos en Mermaid, que
+GitHub muestra solo. Tambien se pueden pegar en https://mermaid.live para verlos.
 
 ## 1. Arquitectura general
 
-Cada microservicio es **independiente**, con su **propia base de datos H2**
-(patrón *database per service*) y su propio puerto. El cliente (Postman / front)
-consume cada API REST por separado.
+Cada microservicio es independiente, tiene su propia base de datos en MySQL y su
+propio puerto. El cliente consume cada API REST por separado.
 
 ```mermaid
 flowchart TB
-    Cliente([Cliente / Postman])
+    Cliente([Cliente])
 
-    subgraph Plataforma GameVault - Microservicios
-        U[usuarios-service<br/>:8081]
-        D[desarrolladoras-service<br/>:8082]
-        C[categorias-service<br/>:8083]
-        J[juegos-service<br/>:8084]
-        CA[carrito-service<br/>:8085]
-        P[pagos-service<br/>:8086]
-        B[biblioteca-service<br/>:8087]
-        S[suscripciones-service<br/>:8088]
-        L[logros-service<br/>:8089]
-        R[resenas-service<br/>:8090]
+    subgraph Microservicios
+        U[usuarios-service 8081]
+        D[desarrolladoras-service 8082]
+        C[categorias-service 8083]
+        J[juegos-service 8084]
+        CA[carrito-service 8085]
+        P[pagos-service 8086]
+        B[biblioteca-service 8087]
+        S[suscripciones-service 8088]
+        L[logros-service 8089]
+        R[resenas-service 8090]
     end
 
     Cliente --> U & D & C & J & CA & P & B & S & L & R
@@ -47,102 +39,84 @@ flowchart TB
     R -.-> DBR[(resenas_db)]
 ```
 
----
+## 2. Comunicacion entre servicios (Feign)
 
-## 2. Mapa de comunicación entre microservicios (Feign)
-
-Las flechas representan **llamadas REST síncronas** vía OpenFeign. Nótese cómo
-`usuarios`, `juegos` y `biblioteca` son los servicios más consumidos.
+Las flechas son llamadas REST entre servicios usando OpenFeign.
 
 ```mermaid
 flowchart LR
-    J[juegos-service] --> D[desarrolladoras-service]
-    J --> C[categorias-service]
+    J[juegos] --> D[desarrolladoras]
+    J --> C[categorias]
 
-    CA[carrito-service] --> U[usuarios-service]
+    CA[carrito] --> U[usuarios]
     CA --> J
 
-    B[biblioteca-service] --> U
+    B[biblioteca] --> U
     B --> J
 
-    P[pagos-service] --> CA
+    P[pagos] --> CA
     P --> U
     P --> B
 
-    S[suscripciones-service] --> U
+    S[suscripciones] --> U
 
-    L[logros-service] --> U
+    L[logros] --> U
     L --> J
 
-    R[resenas-service] --> U
+    R[resenas] --> U
     R --> J
     R --> B
-
-    classDef base fill:#e8f5e9,stroke:#2e7d32;
-    classDef consumidor fill:#e3f2fd,stroke:#1565c0;
-    class U,D,C base;
-    class J,CA,P,B,S,L,R consumidor;
 ```
 
----
+## 3. Flujo de compra (pagos-service)
 
-## 3. Flujo de compra (secuencia) — orquestado por `pagos-service`
-
-Es el flujo más importante para demostrar la interoperabilidad: un solo
-`POST /api/pagos` coordina **cuatro** microservicios.
+Un solo POST /api/pagos coordina cuatro servicios.
 
 ```mermaid
 sequenceDiagram
     actor Cliente
-    participant P as pagos-service
-    participant CA as carrito-service
-    participant U as usuarios-service
-    participant B as biblioteca-service
+    participant P as pagos
+    participant CA as carrito
+    participant U as usuarios
+    participant B as biblioteca
 
-    Cliente->>P: POST /api/pagos { usuarioId, metodoPago: SALDO }
-    P->>CA: GET /api/carrito/usuario/{id}
-    CA-->>P: carrito + total + items
-    Note over P: Valida que el carrito no este vacio
+    Cliente->>P: POST /api/pagos (usuarioId, metodoPago SALDO)
+    P->>CA: GET carrito del usuario
+    CA-->>P: carrito con total e items
+    Note over P: revisa que no este vacio
 
-    P->>U: PUT /api/usuarios/{id}/debitar?monto=total
-    alt Saldo insuficiente
+    P->>U: PUT debitar saldo
+    alt saldo insuficiente
         U-->>P: 409 Conflict
-        P-->>Cliente: 409 "Saldo insuficiente"
-    else Saldo OK
+        P-->>Cliente: 409 saldo insuficiente
+    else saldo ok
         U-->>P: 200 saldo descontado
-        loop por cada juego del carrito
-            P->>B: POST /api/biblioteca { usuarioId, juegoId }
-            B-->>P: 201 juego agregado a la biblioteca
+        loop por cada juego
+            P->>B: POST agregar a biblioteca
+            B-->>P: 201 agregado
         end
-        P->>CA: PUT /api/carrito/usuario/{id}/pagar
-        CA-->>P: 200 carrito marcado PAGADO
-        Note over P: Guarda el Pago (estado COMPLETADO)
-        P-->>Cliente: 201 Pago COMPLETADO + detalle
+        P->>CA: PUT marcar carrito como pagado
+        CA-->>P: 200 pagado
+        Note over P: guarda el pago como COMPLETADO
+        P-->>Cliente: 201 pago completado
     end
 ```
 
----
+## 4. Estructura interna de un microservicio (patron CSR)
 
-## 4. Estructura interna de cada microservicio (patrón CSR)
-
-Todos los servicios siguen la misma organización por capas:
+Todos los servicios estan organizados igual:
 
 ```mermaid
 flowchart TB
-    REQ([HTTP Request]) --> CO
-
-    subgraph Microservicio
-        CO[Controller<br/>recibe la peticion REST] --> SE[Service<br/>logica de negocio]
-        SE --> RE[Repository<br/>JpaRepository]
-        SE -. valida/enriquece .-> FC[Feign Client<br/>llamada remota]
-        RE --> MO[(Entidad JPA / BD)]
-        DTO[DTOs + Bean Validation]:::aux
-        EX[GlobalExceptionHandler<br/>@RestControllerAdvice]:::aux
-    end
-
-    CO -. usa .-> DTO
-    CO -. errores .-> EX
-    RE --> RESP([JSON Response])
-
-    classDef aux fill:#fff3e0,stroke:#e65100;
+    REQ([Request]) --> CO[Controller]
+    CO --> SE[Service]
+    SE --> RE[Repository]
+    SE -.-> FC[Feign Client]
+    RE --> MO[(Base de datos)]
+    RE --> RESP([Response JSON])
 ```
+
+El controller recibe la peticion, el service tiene la logica de negocio, el
+repository accede a la base de datos y el Feign Client se usa cuando hay que
+pedir datos a otro microservicio. Ademas se usan DTOs para entrar y salir datos,
+y un GlobalExceptionHandler para los errores.
