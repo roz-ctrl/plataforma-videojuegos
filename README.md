@@ -9,11 +9,9 @@ de datos en MySQL.
 La explicacion del cambio de monolito a microservicios esta en CASO-DE-ESTUDIO.md
 y los diagramas estan en ARQUITECTURA.md.
 
-## Integrantes
+## Integrante
 
-- (completar nombre) - Equipo (completar)
-- (completar nombre)
-- (completar nombre)
+- Pedro Ponce R - Trabajo individual
 
 ## Tecnologias usadas
 
