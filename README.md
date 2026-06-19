@@ -20,6 +20,9 @@ y los diagramas estan en ARQUITECTURA.md.
 - Spring Data JPA + Hibernate
 - MySQL (servidor de Laragon)
 - Spring Cloud OpenFeign (comunicacion entre servicios)
+- Spring Cloud Gateway (API Gateway, puerto 8080)
+- Swagger / OpenAPI (springdoc) para documentacion
+- JUnit 5 + Mockito + JaCoCo para pruebas unitarias
 - Bean Validation y SLF4J
 - Maven
 
@@ -40,6 +43,34 @@ y los diagramas estan en ARQUITECTURA.md.
 
 Todos estan organizados con el patron CSR (controller, service, repository/model),
 mas los paquetes dto y exception.
+
+## API Gateway
+
+El `gateway-service` (puerto 8080) es el punto unico de entrada: recibe todas las
+peticiones y las reenvia al microservicio correspondiente segun la ruta. Esta
+configurado con Spring Cloud Gateway en
+`gateway-service/src/main/resources/application.yml` (archivo YAML).
+
+Rutas principales (todo entra por el puerto 8080):
+
+| Ruta en el Gateway | Microservicio destino |
+|---|---|
+| /api/usuarios/** | usuarios (8081) |
+| /api/desarrolladoras/** | desarrolladoras (8082) |
+| /api/categorias/** | categorias (8083) |
+| /api/juegos/** | juegos (8084) |
+| /api/carrito/** | carrito (8085) |
+| /api/pagos/** | pagos (8086) |
+| /api/biblioteca/** | biblioteca (8087) |
+| /api/planes/** y /api/suscripciones/** | suscripciones (8088) |
+| /api/logros/** | logros (8089) |
+| /api/resenas/** | resenas (8090) |
+
+Ejemplo: en vez de `http://localhost:8084/api/juegos` puedes pedir
+`http://localhost:8080/api/juegos` y el Gateway lo enruta a juegos-service.
+
+Para levantarlo: `cd gateway-service` y luego `mvn spring-boot:run` (con los
+microservicios que vayas a consumir ya encendidos).
 
 ## Como ejecutar
 
@@ -76,4 +107,4 @@ verlos se puede abrir HeidiSQL desde Laragon.
 
 ## Pendiente
 
-- Documentar los endpoints con Swagger (Springdoc OpenAPI).
+- Despliegue con Docker / docker-compose.

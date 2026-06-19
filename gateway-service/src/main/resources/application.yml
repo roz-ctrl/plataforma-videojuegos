@@ -1,0 +1,76 @@
+# ============================================================
+#  API GATEWAY - GameVault  (puerto 8080)
+#  Punto unico de entrada. Enruta cada peticion al microservicio
+#  correspondiente segun el path. Configurado con Spring Cloud Gateway.
+# ============================================================
+server:
+  port: 8080
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      # Cada ruta: un id, la uri del microservicio destino y el predicado de path.
+      # Las uri usan variables de entorno con valor por defecto local
+      # (formato ${VARIABLE:valor_por_defecto}) para funcionar en local y en Docker.
+      routes:
+        - id: usuarios
+          uri: ${USUARIOS_URI:http://localhost:8081}
+          predicates:
+            - Path=/api/usuarios/**
+
+        - id: desarrolladoras
+          uri: ${DESARROLLADORAS_URI:http://localhost:8082}
+          predicates:
+            - Path=/api/desarrolladoras/**
+
+        - id: categorias
+          uri: ${CATEGORIAS_URI:http://localhost:8083}
+          predicates:
+            - Path=/api/categorias/**
+
+        - id: juegos
+          uri: ${JUEGOS_URI:http://localhost:8084}
+          predicates:
+            - Path=/api/juegos/**
+
+        - id: carrito
+          uri: ${CARRITO_URI:http://localhost:8085}
+          predicates:
+            - Path=/api/carrito/**
+
+        - id: pagos
+          uri: ${PAGOS_URI:http://localhost:8086}
+          predicates:
+            - Path=/api/pagos/**
+
+        - id: biblioteca
+          uri: ${BIBLIOTECA_URI:http://localhost:8087}
+          predicates:
+            - Path=/api/biblioteca/**
+
+        - id: suscripciones-planes
+          uri: ${SUSCRIPCIONES_URI:http://localhost:8088}
+          predicates:
+            - Path=/api/planes/**
+
+        - id: suscripciones
+          uri: ${SUSCRIPCIONES_URI:http://localhost:8088}
+          predicates:
+            - Path=/api/suscripciones/**
+
+        - id: logros
+          uri: ${LOGROS_URI:http://localhost:8089}
+          predicates:
+            - Path=/api/logros/**
+
+        - id: resenas
+          uri: ${RESENAS_URI:http://localhost:8090}
+          predicates:
+            - Path=/api/resenas/**
+
+# Log para ver el enrutamiento del Gateway en consola
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
