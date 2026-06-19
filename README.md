@@ -1,6 +1,6 @@
 # Plataforma de Venta de Videojuegos (Microservicios)
 
-Proyecto de la asignatura DSY1103 - Desarrollo FullStack 1 (Evaluacion Parcial 2).
+Proyecto de la asignatura DSY1103 - Desarrollo FullStack 1 (Evaluacion Parcial 3).
 
 Es una tienda de videojuegos digitales parecida a Steam, hecha con Spring Boot.
 La aplicacion esta dividida en 10 microservicios y cada uno tiene su propia base
@@ -9,9 +9,10 @@ de datos en MySQL.
 La explicacion del cambio de monolito a microservicios esta en CASO-DE-ESTUDIO.md
 y los diagramas estan en ARQUITECTURA.md.
 
-## Integrante
+## Integrantes
+- Rafael Miotta
+- Pedro Ponce R 
 
-- Pedro Ponce R - Trabajo individual
 
 ## Tecnologias usadas
 
