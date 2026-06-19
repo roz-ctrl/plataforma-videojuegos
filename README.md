@@ -96,6 +96,31 @@ pagos, suscripciones, logros y resenas).
 Los datos de ejemplo se cargan desde el archivo data.sql de cada servicio. Para
 verlos se puede abrir HeidiSQL desde Laragon.
 
+## Docker
+
+Todo el sistema (MySQL + los 10 microservicios + el gateway) se levanta con Docker
+Compose. Requisito: Docker Desktop funcionando.
+
+1. Generar los .jar de cada servicio:
+   ```
+   .\construir-jars.ps1
+   ```
+2. Levantar todo:
+   ```
+   docker compose up --build
+   ```
+
+Se crea un contenedor MySQL (con las 10 bases) y un contenedor por cada
+microservicio + el gateway. La configuracion (host de la BD y URLs entre
+servicios) se inyecta por variables de entorno en `docker-compose.yml`, sin tocar
+el codigo. Una vez arriba, todo se consume por el gateway en
+`http://localhost:8080`.
+
+Comandos utiles:
+- `docker compose ps` - ver contenedores
+- `docker compose logs -f gateway-service` - ver logs de un servicio
+- `docker compose down` - detener todo
+
 ## Funcionalidades
 
 - CRUD completo con JpaRepository en cada servicio.
@@ -107,4 +132,5 @@ verlos se puede abrir HeidiSQL desde Laragon.
 
 ## Pendiente
 
-- Despliegue con Docker / docker-compose.
+- Tablero Trello del equipo.
+- (Opcional) Despliegue remoto en Railway / Render.

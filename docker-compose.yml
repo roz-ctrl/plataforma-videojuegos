@@ -1,0 +1,218 @@
+# ============================================================
+#  GameVault - Orquestacion completa con Docker Compose
+#  Levanta: MySQL + los 10 microservicios + el API Gateway.
+#  Cada servicio recibe su configuracion por variables de entorno
+#  (Spring Boot las mapea sobre application.properties sin tocar codigo).
+#  Uso:  docker compose up --build
+# ============================================================
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: gamevault-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"          # host 3307 -> contenedor 3306 (evita chocar con Laragon)
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    networks: [gamevault]
+
+  usuarios-service:
+    build: ./usuarios-service
+    container_name: usuarios-service
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/usuarios_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8081:8081"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [gamevault]
+
+  desarrolladoras-service:
+    build: ./desarrolladoras-service
+    container_name: desarrolladoras-service
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/desarrolladoras_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8082:8082"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [gamevault]
+
+  categorias-service:
+    build: ./categorias-service
+    container_name: categorias-service
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/categorias_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8083:8083"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [gamevault]
+
+  juegos-service:
+    build: ./juegos-service
+    container_name: juegos-service
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/juegos_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVICIOS_DESARROLLADORAS_URL: http://desarrolladoras-service:8082
+      SERVICIOS_CATEGORIAS_URL: http://categorias-service:8083
+    ports:
+      - "8084:8084"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [gamevault]
+
+  carrito-service:
+    build: ./carrito-service
+    container_name: carrito-service
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/carrito_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVICIOS_USUARIOS_URL: http://usuarios-service:8081
+      SERVICIOS_JUEGOS_URL: http://juegos-service:8084
+    ports:
+      - "8085:8085"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [gamevault]
+
+  pagos-service:
+    build: ./pagos-service
+    container_name: pagos-service
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/pagos_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVICIOS_USUARIOS_URL: http://usuarios-service:8081
+      SERVICIOS_CARRITO_URL: http://carrito-service:8085
+      SERVICIOS_BIBLIOTECA_URL: http://biblioteca-service:8087
+    ports:
+      - "8086:8086"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [gamevault]
+
+  biblioteca-service:
+    build: ./biblioteca-service
+    container_name: biblioteca-service
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/biblioteca_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVICIOS_USUARIOS_URL: http://usuarios-service:8081
+      SERVICIOS_JUEGOS_URL: http://juegos-service:8084
+    ports:
+      - "8087:8087"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [gamevault]
+
+  suscripciones-service:
+    build: ./suscripciones-service
+    container_name: suscripciones-service
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/suscripciones_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVICIOS_USUARIOS_URL: http://usuarios-service:8081
+    ports:
+      - "8088:8088"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [gamevault]
+
+  logros-service:
+    build: ./logros-service
+    container_name: logros-service
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/logros_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVICIOS_USUARIOS_URL: http://usuarios-service:8081
+      SERVICIOS_JUEGOS_URL: http://juegos-service:8084
+    ports:
+      - "8089:8089"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [gamevault]
+
+  resenas-service:
+    build: ./resenas-service
+    container_name: resenas-service
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/resenas_db?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SERVICIOS_USUARIOS_URL: http://usuarios-service:8081
+      SERVICIOS_JUEGOS_URL: http://juegos-service:8084
+      SERVICIOS_BIBLIOTECA_URL: http://biblioteca-service:8087
+    ports:
+      - "8090:8090"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks: [gamevault]
+
+  gateway-service:
+    build: ./gateway-service
+    container_name: gateway-service
+    restart: unless-stopped
+    environment:
+      USUARIOS_URI: http://usuarios-service:8081
+      DESARROLLADORAS_URI: http://desarrolladoras-service:8082
+      CATEGORIAS_URI: http://categorias-service:8083
+      JUEGOS_URI: http://juegos-service:8084
+      CARRITO_URI: http://carrito-service:8085
+      PAGOS_URI: http://pagos-service:8086
+      BIBLIOTECA_URI: http://biblioteca-service:8087
+      SUSCRIPCIONES_URI: http://suscripciones-service:8088
+      LOGROS_URI: http://logros-service:8089
+      RESENAS_URI: http://resenas-service:8090
+    ports:
+      - "8080:8080"
+    depends_on:
+      - usuarios-service
+      - juegos-service
+    networks: [gamevault]
+
+networks:
+  gamevault:
+
+volumes:
+  mysql_data:
